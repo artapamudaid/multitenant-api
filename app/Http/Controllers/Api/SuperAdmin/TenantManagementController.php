@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\Landlord;
+namespace App\Http\Controllers\Api\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use App\Services\TenantService;
 
@@ -18,21 +18,42 @@ class TenantManagementController extends Controller
         protected TenantService $tenantService
     ) {}
 
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $tenants = Tenant::withCount('users')->paginate(20);
+
+        $query = Tenant::with(['package', 'users']);
+
+        if ($request->has('status')) {
+            $query->where('subscription_status', $request->status);
+        }
+
+        // Search
+        if ($request->has('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('subdomain', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $tenants = $query->latest()->paginate($request->per_page ?? 15);
 
         return response()->json([
             'success' => true,
             'data' => TenantResource::collection($tenants),
+            'pagination' => [
+                'total' => $tenants->total(),
+                'per_page' => $tenants->perPage(),
+                'current_page' => $tenants->currentPage(),
+                'last_page' => $tenants->lastPage(),
+            ],
         ]);
     }
 
-    public function show(Tenant $tenant)
+    public function show(Tenant $tenant): JsonResponse
     {
         return response()->json([
             'success' => true,
-            'data' => new TenantResource($tenant->load('users')),
+            'data' => new TenantResource($tenant->load(['package', 'users'])),
         ]);
     }
 
@@ -42,7 +63,7 @@ class TenantManagementController extends Controller
             'name'         => 'required|string|max:255',
             'email'        => 'required|string|email|max:255|unique:users,email',
             'password'     => 'required|string|min:8|confirmed',
-            'company_name' => 'required|string|max:255',
+            'entity_name' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -56,7 +77,7 @@ class TenantManagementController extends Controller
         try {
             // Buat tenant baru
             $result = $this->tenantService->createTenant(
-                $request->company_name,
+                $request->entity_name,
                 $request->name,
                 $request->email,
                 $request->password
@@ -77,6 +98,19 @@ class TenantManagementController extends Controller
                 'message' => 'Failed to create tenant: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function toggleStatus(Tenant $tenant): JsonResponse
+    {
+        $tenant->update([
+            'is_active' => !$tenant->is_active,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tenant status updated',
+            'data' => new TenantResource($tenant),
+        ]);
     }
 
     public function update(Request $request, String $id)

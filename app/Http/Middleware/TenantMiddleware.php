@@ -30,7 +30,7 @@ class TenantMiddleware
         $user = $request->user();
 
         if ($user) {
-            // Jika super admin (tenant_id null)
+            // Jika Landlord (tenant_id null)
             if (is_null($user->tenant_id)) {
                 // Bisa akses semua tenant
                 return $next($request);

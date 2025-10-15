@@ -28,7 +28,8 @@ class AuthController extends Controller
             'name'         => 'required|string|max:255',
             'email'        => 'required|string|email|max:255|unique:users,email',
             'password'     => 'required|string|min:8|confirmed',
-            'company_name' => 'required|string|max:255',
+            'entity_name' => 'required|string|max:255',
+            'package' => 'nullable|string|in:bawah,menengah,atas',
         ]);
 
         if ($validator->fails()) {
@@ -41,10 +42,12 @@ class AuthController extends Controller
 
         try {
             $result = $this->tenantService->createTenant(
-                $request->company_name,
+                $request->entity_name,
                 $request->name,
                 $request->email,
-                $request->password
+                $request->password,
+                $request->package ?? 'atas'
+
             );
 
             return response()->json([

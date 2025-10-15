@@ -49,7 +49,7 @@ valet link
 php artisan migrate
 php artisan db:seed
 ```
-## Akses Login Super Admin
+## Akses Login Super Admin (Landlord)
 ```bash
 email : superadmin@mail.com
 password : password

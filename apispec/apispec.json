@@ -57,7 +57,7 @@
           "subdomain": {
             "type": "string"
           },
-          "company_name": {
+          "entity_name": {
             "type": "string"
           },
           "is_active": {
@@ -107,7 +107,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["name", "email", "password", "password_confirmation", "company_name"],
+                "required": ["name", "email", "password", "password_confirmation", "entity_name"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -126,7 +126,7 @@
                     "type": "string",
                     "example": "password25"
                   },
-                  "company_name": {
+                  "entity_name": {
                     "type": "string",
                     "example": "PT Pamuda Indonesia"
                   }
@@ -574,7 +574,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["name", "email", "password", "password_confirmation", "company_name"],
+                "required": ["name", "email", "password", "password_confirmation", "entity_name"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -593,7 +593,7 @@
                     "type": "string",
                     "example": "password22"
                   },
-                  "company_name": {
+                  "entity_name": {
                     "type": "string",
                     "example": "PT Ploso Klaten Wates Sejahtera"
                   }

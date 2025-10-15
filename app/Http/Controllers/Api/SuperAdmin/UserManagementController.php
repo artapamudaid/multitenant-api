@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Landlord;
+namespace App\Http\Controllers\Api\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;

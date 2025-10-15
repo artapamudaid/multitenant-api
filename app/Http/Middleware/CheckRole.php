@@ -6,9 +6,9 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class LandlordMiddleware
+class CheckRole
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!$request->user()) {
             return response()->json([
@@ -17,10 +17,11 @@ class LandlordMiddleware
             ], 401);
         }
 
-        if (!$request->user()->isSuperAdmin()) {
+        if (!$request->user()->hasRole($roles)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Landlord access required',
+                'message' => 'You do not have the required role',
+                'required_roles' => $roles,
             ], 403);
         }
 

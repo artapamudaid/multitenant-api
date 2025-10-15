@@ -18,7 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'tenant' => \App\Http\Middleware\TenantMiddleware::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
             'landlord' => \App\Http\Middleware\LandlordMiddleware::class,
+            'subscription' => \App\Http\Middleware\CheckSubscription::class,
+            'feature' => \App\Http\Middleware\CheckPackageFeature::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         ]);
     })

@@ -17,6 +17,11 @@ class TenantResource extends JsonResource
             'url' => $this->url,
             'api_url' => $this->api_url,
             'is_active' => $this->is_active,
+            'subscription_status' => $this->subscription_status,
+            'package_started_at' => $this->package_started_at?->toISOString(),
+            'package_expires_at' => $this->package_expires_at?->toISOString(),
+            'is_subscription_active' => $this->isSubscriptionActive(),
+            'package' => new PackageResource($this->whenLoaded('package')),
             'settings' => $this->settings,
             'users_count' => $this->when(
                 $this->relationLoaded('users'),
