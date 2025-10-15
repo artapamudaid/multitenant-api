@@ -1,0 +1,1772 @@
+{
+	"info": {
+		"_postman_id": "db4fe881-8f0d-488a-8e3b-72d0fd032c4b",
+		"name": "Multi-Tenant SaaS API",
+		"description": "Complete API testing for Laravel Multi-Tenant SaaS with RBAC and Subscription",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18101722",
+		"_collection_link": "https://service-gerakan-kebiasaan-anak-hebat.postman.co/workspace/Service-Gerakan-Kebiasaan-Anak-~43a3693a-7b3a-43b3-8e4a-032335884be2/collection/18101722-db4fe881-8f0d-488a-8e3b-72d0fd032c4b?action=share&source=collection_link&creator=18101722"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register Tenant (Paket Bawah)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"    pm.environment.set('tenant_id', jsonData.data.tenant.id);",
+									"    pm.environment.set('tenant_url', jsonData.data.tenant.api_url);",
+									"    console.log('Token saved:', jsonData.data.token);",
+									"    console.log('Tenant URL:', jsonData.data.tenant.api_url);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"entity_name\": \"PT Example Indonesia\",\n    \"package\": \"bawah\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Tenant (Paket Menengah) Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane@company.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"entity_name\": \"PT Digital Menengah\",\n    \"package\": \"menengah\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Tenant (Paket Atas)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Mahfudz\",\n    \"email\": \"mahfudz@indoweb.id\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"entity_name\": \"PT Indoweb Bangun Indonesia\",\n    \"package\": \"atas\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Tenant User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"    console.log('Token saved:', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mahfudz@indoweb.id\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Super Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('super_admin_token', jsonData.data.token);",
+									"    console.log('Super Admin Token saved');",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"superadmin@mail.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Menu System",
+			"item": [
+				{
+					"name": "Get Sidebar Menu (Tenant)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "9|fTj371iT4cC2GNrQGck12AHNTZPr3xsbMtKTSBYEe0b73dff",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/menu/sidebar",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"menu",
+								"sidebar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sidebar Menu (Super Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|BBENNlPOm9g208c9u4qMisCuWQSucLexhiWKETdbe5359c96",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/menu/sidebar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"menu",
+								"sidebar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Landlord - Packages",
+			"item": [
+				{
+					"name": "List All Packages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|BBENNlPOm9g208c9u4qMisCuWQSucLexhiWKETdbe5359c96",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Package",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|BBENNlPOm9g208c9u4qMisCuWQSucLexhiWKETdbe5359c96",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Paket Premium\",\n    \"slug\": \"premium\",\n    \"description\": \"Paket untuk enterprise besar\",\n    \"price_monthly\": 1999000,\n    \"max_users\": 9999,\n    \"max_storage_mb\": 100000,\n    \"features\": [\n        \"All Features\",\n        \"Dedicated Support\",\n        \"Custom Integration\",\n        \"SLA 99.9%\"\n    ],\n    \"is_active\": true,\n    \"sort_order\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Package",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price_monthly\": 1899000,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/packages/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"packages",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Package",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/packages/4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"packages",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Landlord - Tenants",
+			"item": [
+				{
+					"name": "List All Tenants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants?per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "example",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Tenant Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/{{tenant_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"{{tenant_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Tenant Status Active/Inactive",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/toggle-status/{{tenant_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"toggle-status",
+								"{{tenant_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store New Tenant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Davit\",\n    \"email\": \"davit.corp@gmail.com\",\n    \"password\": \"password22\",\n    \"password_confirmation\": \"password22\",\n    \"entity_name\": \"PT Ploso Klaten Wates Sejahtera\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Tenant Existing",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"PT Wates Indah\",\n    \"subdomain\":\"ptwatesindah\",\n    \"is_active\":false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/5926d8e6-d2c3-4e5c-9951-0db7866aee6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"5926d8e6-d2c3-4e5c-9951-0db7866aee6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/5926d8e6-d2c3-4e5c-9951-0db7866aee6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"5926d8e6-d2c3-4e5c-9951-0db7866aee6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Trashed Tenants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/trashed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"trashed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Tenant From Trash",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/restore/5926d8e6-d2c3-4e5c-9951-0db7866aee6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"restore",
+								"5926d8e6-d2c3-4e5c-9951-0db7866aee6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Force Delete Tenant",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/tenants/force/5926d8e6-d2c3-4e5c-9951-0db7866aee6c",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"tenants",
+								"force",
+								"5926d8e6-d2c3-4e5c-9951-0db7866aee6c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Landlord - Transactions",
+			"item": [
+				{
+					"name": "List All Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/transactions?per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "10"
+								},
+								{
+									"key": "tenant_id",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "upgrade",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "completed",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transaction Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/transactions/statistics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"transactions",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Landlord - Menu Management",
+			"item": [
+				{
+					"name": "List Menus (Tenant Scope)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/menus?scope=tenant",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"menus"
+							],
+							"query": [
+								{
+									"key": "scope",
+									"value": "tenant"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Menu",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|BBENNlPOm9g208c9u4qMisCuWQSucLexhiWKETdbe5359c96",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Inventory\",\n    \"icon\": \"Package\",\n    \"route\": \"tenant.inventory\",\n    \"scope\": \"tenant\",\n    \"permission\": \"inventory.view\",\n    \"package_feature\": \"Inventory Management\",\n    \"order\": 6\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/menus",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"menus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Menu",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Inventory Management\",\n    \"order\": 5,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/menus/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"menus",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Menus",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"menus\": [\n        {\"id\": 1, \"order\": 1, \"parent_id\": null},\n        {\"id\": 2, \"order\": 2, \"parent_id\": null},\n        {\"id\": 3, \"order\": 3, \"parent_id\": null}\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/menus/reorder",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"menus",
+								"reorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Menu",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/menus/24",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"menus",
+								"24"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Landlord - Uers",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/landlord/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{super_admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Customer Service\",\n    \"email\": \"cs@mail.com\",\n    \"password\": \"passwordcs\",\n    \"tenant_id\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4|HVK7ubaJ7lg48Ssd5Mz35XymsVY9mRwLanJAboVqce5f7149",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/landlord/users/?id=34f21299-2c68-4564-84cd-8a641816d205",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"users",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "34f21299-2c68-4564-84cd-8a641816d205"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4|HVK7ubaJ7lg48Ssd5Mz35XymsVY9mRwLanJAboVqce5f7149",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"CS\",\n    \"is_active\":false,\n    \"tenant_id\":null,\n    \"password\":\"100riburupiah\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/users/34f21299-2c68-4564-84cd-8a641816d205",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"users",
+								"34f21299-2c68-4564-84cd-8a641816d205"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Inactive",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4|HVK7ubaJ7lg48Ssd5Mz35XymsVY9mRwLanJAboVqce5f7149",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_active\":false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/users/inactivate/34f21299-2c68-4564-84cd-8a641816d205",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"users",
+								"inactivate",
+								"34f21299-2c68-4564-84cd-8a641816d205"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Active",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "4|HVK7ubaJ7lg48Ssd5Mz35XymsVY9mRwLanJAboVqce5f7149",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"is_active\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/landlord/users/activate/34f21299-2c68-4564-84cd-8a641816d205",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"landlord",
+								"users",
+								"activate",
+								"34f21299-2c68-4564-84cd-8a641816d205"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Tenant - Dashboard",
+			"item": [
+				{
+					"name": "Get Dashboard Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/dashboard",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "9. Tenant - Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/users?per_page=10",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "john",
+									"disabled": true
+								},
+								{
+									"key": "role",
+									"value": "staff",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Staff User\",\n    \"email\": \"staff@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"roles\": [3]\n}"
+						},
+						"url": {
+							"raw": "{{tenant_url}}/users",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/users/1",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Staff User Updated\",\n    \"roles\": [2]\n}"
+						},
+						"url": {
+							"raw": "{{tenant_url}}/users/2",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/users/2",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "10. Tenant - Roles",
+			"item": [
+				{
+					"name": "List Roles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/roles",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/roles/permissions",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"roles",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sales Team\",\n    \"description\": \"Role untuk team sales\",\n    \"permissions\": [1, 5, 9, 13, 14]\n}"
+						},
+						"url": {
+							"raw": "{{tenant_url}}/roles",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Role",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/roles/1",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sales Manager\",\n    \"permissions\": [1, 5, 6, 9, 13, 14, 15]\n}"
+						},
+						"url": {
+							"raw": "{{tenant_url}}/roles/4",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"roles",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Role",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/roles/4",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"roles",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "11. Tenant - Subscription",
+			"item": [
+				{
+					"name": "Get Current Subscription",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/subscription",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Packages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/subscription/packages",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade Package",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"package_slug\": \"menengah\"\n}"
+						},
+						"url": {
+							"raw": "{{tenant_url}}/subscription/upgrade",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription",
+								"upgrade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Renew Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"months\": 3\n}"
+						},
+						"url": {
+							"raw": "{{tenant_url}}/subscription/renew",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription",
+								"renew"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "12. Tenant - Subscription History",
+			"item": [
+				{
+					"name": "List Transaction History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/subscription/history?per_page=15",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription",
+								"history"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "15"
+								},
+								{
+									"key": "type",
+									"value": "upgrade",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "completed",
+									"disabled": true
+								},
+								{
+									"key": "from_date",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "to_date",
+									"value": "2024-12-31",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Transaction Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/subscription/history/1",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription",
+								"history",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download Invoice",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{tenant_url}}/subscription/history/1/invoice",
+							"host": [
+								"{{tenant_url}}"
+							],
+							"path": [
+								"subscription",
+								"history",
+								"1",
+								"invoice"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://multitenant.test/api",
+			"type": "string"
+		},
+		{
+			"key": "tenant_url",
+			"value": "https://pt-example.multitenant.test/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "super_admin_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "tenant_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
